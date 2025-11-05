@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartDoc AI - Control Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 36px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .service-card.online {
+            border-color: #10b981;
+        }
+
+        .service-card.offline {
+            border-color: #ef4444;
+        }
+
+        .service-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .service-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.online {
+            background: #10b981;
+            box-shadow: 0 0 10px #10b981;
+        }
+
+        .status-indicator.offline {
+            background: #ef4444;
+            box-shadow: 0 0 10px #ef4444;
+        }
+
+        .status-indicator.checking {
+            background: #f59e0b;
+            box-shadow: 0 0 10px #f59e0b;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .service-info {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .service-url {
+            background: #f3f4f6;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #333;
+            margin-top: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .main-action {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .launch-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 18px 40px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .launch-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .launch-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status-summary {
+            text-align: center;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .status-text {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .emoji {
+            font-size: 24px;
+            margin-right: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .loader {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .launch-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">📄✨</div>
+            <h1>SmartDoc AI</h1>
+            <p class="subtitle">Complete Document Processing Platform</p>
+        </div>
+
+        <div class="status-summary" id="statusSummary">
+            <div class="loader"></div>
+            <p class="status-text">Checking services...</p>
+        </div>
+
+        <div class="services-grid">
+            <!-- Frontend Service -->
+            <div class="service-card" id="frontend-card">
+                <div class="service-header">
+                    <span class="service-name">🌐 Frontend</span>
+                    <span class="status-indicator checking" id="frontend-status"></span>
+                </div>
+                <p class="service-info">Next.js Application (48 AI Tools)</p>
+                <div class="service-url">http://localhost:3000</div>
+                <a href="http://localhost:3000" target="_blank" class="btn btn-primary" id="frontend-btn" disabled>
+                    Open Dashboard
+                </a>
+                <button class="btn btn-secondary" onclick="checkService('frontend')">
+                    🔄 Recheck
+                </button>
+            </div>
+
+            <!-- Backend Service -->
+            <div class="service-card" id="backend-card">
+                <div class="service-header">
+                    <span class="service-name">⚙️ Backend API</span>
+                    <span class="status-indicator checking" id="backend-status"></span>
+                </div>
+                <p class="service-info">Node.js Express Server</p>
+                <div class="service-url">http://localhost:3001</div>
+                <a href="http://localhost:3001/api/health" target="_blank" class="btn btn-primary" id="backend-btn" disabled>
+                    View Health
+                </a>
+                <button class="btn btn-secondary" onclick="checkService('backend')">
+                    🔄 Recheck
+                </button>
+            </div>
+
+            <!-- AI Service -->
+            <div class="service-card" id="ai-card">
+                <div class="service-header">
+                    <span class="service-name">🤖 AI Service</span>
+                    <span class="status-indicator checking" id="ai-status"></span>
+                </div>
+                <p class="service-info">Python FastAPI (AI Processing)</p>
+                <div class="service-url">http://localhost:8001</div>
+                <a href="http://localhost:8001/docs" target="_blank" class="btn btn-primary" id="ai-btn" disabled>
+                    View API Docs
+                </a>
+                <button class="btn btn-secondary" onclick="checkService('ai')">
+                    🔄 Recheck
+                </button>
+            </div>
+        </div>
+
+        <div class="main-action">
+            <button class="launch-btn" id="launchBtn" onclick="launchApp()" disabled>
+                <span>🚀</span>
+                <span id="launchText">Checking Services...</span>
+            </button>
+        </div>
+
+        <div class="footer">
+            <p>SmartDoc AI v1.0.0 | 48 AI-Powered Tools | Production Ready</p>
+            <p style="margin-top: 8px; font-size: 12px;">
+                Make sure all services are running before launching
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const services = {
+            frontend: {
+                url: 'http://localhost:3000',
+                name: 'Frontend',
+                checkEndpoint: 'http://localhost:3000'
+            },
+            backend: {
+                url: 'http://localhost:3001',
+                name: 'Backend',
+                checkEndpoint: 'http://localhost:3001/api/health'
+            },
+            ai: {
+                url: 'http://localhost:8001',
+                name: 'AI Service',
+                checkEndpoint: 'http://localhost:8001/'
+            }
+        };
+
+        let serviceStatus = {
+            frontend: false,
+            backend: false,
+            ai: false
+        };
+
+        async function checkService(serviceName) {
+            const service = services[serviceName];
+            const statusIndicator = document.getElementById(`${serviceName}-status`);
+            const card = document.getElementById(`${serviceName}-card`);
+            const btn = document.getElementById(`${serviceName}-btn`);
+
+            // Set checking state
+            statusIndicator.className = 'status-indicator checking';
+            card.className = 'service-card';
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+                const response = await fetch(service.checkEndpoint, {
+                    method: 'GET',
+                    signal: controller.signal,
+                    mode: 'no-cors' // For cross-origin requests
+                });
+
+                clearTimeout(timeoutId);
+
+                // Since no-cors mode, we assume success if no error
+                serviceStatus[serviceName] = true;
+                statusIndicator.className = 'status-indicator online';
+                card.className = 'service-card online';
+                btn.disabled = false;
+
+            } catch (error) {
+                // Service is offline
+                serviceStatus[serviceName] = false;
+                statusIndicator.className = 'status-indicator offline';
+                card.className = 'service-card offline';
+                btn.disabled = true;
+            }
+
+            updateStatusSummary();
+        }
+
+        async function checkAllServices() {
+            const promises = Object.keys(services).map(service => checkService(service));
+            await Promise.all(promises);
+        }
+
+        function updateStatusSummary() {
+            const summary = document.getElementById('statusSummary');
+            const launchBtn = document.getElementById('launchBtn');
+            const launchText = document.getElementById('launchText');
+
+            const onlineCount = Object.values(serviceStatus).filter(status => status).length;
+            const totalCount = Object.keys(serviceStatus).length;
+
+            if (onlineCount === totalCount) {
+                summary.innerHTML = `
+                    <p class="status-text">
+                        <span class="emoji">✅</span>
+                        All Services Online (${onlineCount}/${totalCount})
+                    </p>
+                `;
+                launchBtn.disabled = false;
+                launchText.textContent = 'Launch SmartDoc AI';
+            } else if (onlineCount === 0) {
+                summary.innerHTML = `
+                    <p class="status-text">
+                        <span class="emoji">❌</span>
+                        All Services Offline (${onlineCount}/${totalCount})
+                    </p>
+                `;
+                launchBtn.disabled = true;
+                launchText.textContent = 'Services Not Running';
+            } else {
+                summary.innerHTML = `
+                    <p class="status-text">
+                        <span class="emoji">⚠️</span>
+                        Partial Services Online (${onlineCount}/${totalCount})
+                    </p>
+                `;
+                launchBtn.disabled = true;
+                launchText.textContent = 'Start All Services';
+            }
+        }
+
+        function launchApp() {
+            if (serviceStatus.frontend) {
+                window.open('http://localhost:3000', '_blank');
+            }
+        }
+
+        // Auto-check on load
+        window.addEventListener('load', () => {
+            checkAllServices();
+            
+            // Auto-refresh every 10 seconds
+            setInterval(() => {
+                checkAllServices();
+            }, 10000);
+        });
+
+        // Manual refresh
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
+                e.preventDefault();
+                checkAllServices();
+            }
+        });
+    </script>
+</body>
+</html>
